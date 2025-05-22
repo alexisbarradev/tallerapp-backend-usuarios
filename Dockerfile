@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/usuarioback-0.0.1-SNAPSHOT.jar app.jar
 
 # Copiar el wallet (TNS_ADMIN apunta aquí)
-COPY src/main/resources/wallet /opt/oracle/wallet
+COPY src/main/resources/Wallet_GN7WCCPBMJLR2TGC /opt/oracle/wallet
 
 # Exponer el puerto que usa Spring Boot
 EXPOSE 8080
