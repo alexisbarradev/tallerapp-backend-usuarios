@@ -1,8 +1,9 @@
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+
+# Ignorar wallet de Oracle Cloud
+src/main/resources/wallet/
 
 ### STS ###
 .apt_generated
@@ -26,8 +27,11 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
+### Docker ###
+*.log
+*.pid
+docker-compose.override.yml

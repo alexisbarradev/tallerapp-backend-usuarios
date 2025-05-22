@@ -76,11 +76,24 @@ public class UsuarioService {
     return "Usuario actualizado correctamente.";
 }
 
-public String eliminarUsuario(Long id) {
-    if (!usuarioRepository.existsById(id)) {
-        return "Error: Usuario no encontrado.";
+    public String eliminarUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            return "Error: Usuario no encontrado.";
+        }
+        usuarioRepository.deleteById(id);
+        return "Usuario eliminado correctamente.";
     }
-    usuarioRepository.deleteById(id);
-    return "Usuario eliminado correctamente.";
-}
+
+    public Optional<Usuario> buscarPorCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo);
+    }
+
+    public Optional<Usuario> buscarPorUsuario(String nombreUsuario) {
+        return usuarioRepository.findByUsuario(nombreUsuario);
+    }
+
+    public Optional<Usuario> buscarPorRut(String rut) {
+        return usuarioRepository.findByRut(rut);
+    }
+
 }
