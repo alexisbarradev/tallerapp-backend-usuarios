@@ -4,8 +4,8 @@ import com.taller.usuarioback.model.Usuario;
 import com.taller.usuarioback.repository.UsuarioRepository;
 import com.taller.usuarioback.repository.RolUsuarioRepository;
 import com.taller.usuarioback.repository.EstadoUsuarioRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder; // 🔑 Importamos PasswordEncoder
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +22,9 @@ public class UsuarioService {
 
     @Autowired
     private EstadoUsuarioRepository estadoRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; // 🔑 Inyectamos PasswordEncoder
 
     public String crearUsuario(Usuario usuario) {
         if (usuarioRepository.existsByRut(usuario.getRut())) {
@@ -41,6 +44,9 @@ public class UsuarioService {
             return "Error: El rol o el estado no existen.";
         }
 
+        // 🔒 Encriptamos la contraseña antes de guardarla
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
         usuarioRepository.save(usuario);
         return "Usuario creado exitosamente.";
     }
@@ -49,32 +55,35 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-
     public String actualizarUsuario(Long id, Usuario usuarioActualizado) {
-    Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
 
-    if (usuarioOptional.isEmpty()) {
-        return "Error: Usuario no encontrado.";
+        if (usuarioOptional.isEmpty()) {
+            return "Error: Usuario no encontrado.";
+        }
+
+        Usuario existente = usuarioOptional.get();
+
+        // Actualiza los campos individuales
+        existente.setPrimerNombre(usuarioActualizado.getPrimerNombre());
+        existente.setSegundoNombre(usuarioActualizado.getSegundoNombre());
+        existente.setApellidoPaterno(usuarioActualizado.getApellidoPaterno());
+        existente.setApellidoMaterno(usuarioActualizado.getApellidoMaterno());
+        existente.setCorreo(usuarioActualizado.getCorreo());
+        existente.setUsuario(usuarioActualizado.getUsuario());
+        existente.setRut(usuarioActualizado.getRut());
+        existente.setRol(usuarioActualizado.getRol());
+        existente.setEstado(usuarioActualizado.getEstado());
+
+        // 🔒 Si la contraseña fue modificada, encriptarla antes de guardarla
+        if (usuarioActualizado.getPassword() != null && !usuarioActualizado.getPassword().isBlank()) {
+            existente.setPassword(passwordEncoder.encode(usuarioActualizado.getPassword()));
+        }
+
+        usuarioRepository.save(existente);
+
+        return "Usuario actualizado correctamente.";
     }
-
-    Usuario existente = usuarioOptional.get();
-
-    // Actualiza los campos individuales
-    existente.setPrimerNombre(usuarioActualizado.getPrimerNombre());
-    existente.setSegundoNombre(usuarioActualizado.getSegundoNombre());
-    existente.setApellidoPaterno(usuarioActualizado.getApellidoPaterno());
-    existente.setApellidoMaterno(usuarioActualizado.getApellidoMaterno());
-    existente.setCorreo(usuarioActualizado.getCorreo());
-    existente.setUsuario(usuarioActualizado.getUsuario());
-    existente.setRut(usuarioActualizado.getRut());
-    existente.setRol(usuarioActualizado.getRol());
-    existente.setEstado(usuarioActualizado.getEstado());
-    existente.setPassword(usuarioActualizado.getPassword());
-
-    usuarioRepository.save(existente);
-
-    return "Usuario actualizado correctamente.";
-}
 
     public String eliminarUsuario(Long id) {
         if (!usuarioRepository.existsById(id)) {
@@ -95,5 +104,4 @@ public class UsuarioService {
     public Optional<Usuario> buscarPorRut(String rut) {
         return usuarioRepository.findByRut(rut);
     }
-
 }
