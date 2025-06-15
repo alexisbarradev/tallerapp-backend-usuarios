@@ -43,6 +43,13 @@ public class Usuario {
     @Size(min = 7, max = 18)
     private String password;
 
+    @Column(name = "url_contrato")
+    private String urlContrato;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String direccion;
+
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private RolUsuario rol;
@@ -123,6 +130,22 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUrlContrato() {
+        return urlContrato;
+    }
+
+    public void setUrlContrato(String urlContrato) {
+        this.urlContrato = urlContrato;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public RolUsuario getRol() {
